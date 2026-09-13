@@ -1,0 +1,6 @@
+* text=auto
+*.md text eol=lf
+.clinerules/** text eol=lf
+node_modules/** -all
+.next/** -all
+public/** !.gitkeep

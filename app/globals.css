@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: #f2f6fd;
+  --color-brand-100: #e3ecfa;
+  --color-brand-200: #c5d7f3;
+  --color-brand-300: #9bb8e8;
+  --color-brand-400: #6a91d8;
+  --color-brand-500: #446fc3;
+  --color-brand-600: #2f55a4;
+  --color-brand-700: #234084;
+  --color-brand-800: #182e63;
+  --color-brand-900: #0a1a4a;
+  --color-brand-950: #001729;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-white text-slate-700 antialiased dark:bg-slate-950 dark:text-slate-300;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-slate-900 dark:text-white;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  p { text-wrap: pretty; }
+
+  img, video, iframe { max-width: 100%; }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500 dark:outline-brand-300;
+  }
+
+  ::selection {
+    @apply bg-brand-900 text-white;
+  }
+
+  [id] { scroll-margin-top: 6rem; }
+}
+
+@layer components {
+  .container-app {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section {
+    @apply py-16 sm:py-20 lg:py-28;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700 dark:border-brand-800 dark:bg-brand-900/40 dark:text-brand-200;
+  }
+
+  .heading-lg {
+    @apply text-[2rem] leading-[1.15] sm:text-5xl lg:text-6xl;
+  }
+
+  .heading-md {
+    @apply text-2xl leading-tight sm:text-3xl lg:text-4xl;
+  }
+
+  .heading-sm {
+    @apply text-lg sm:text-xl;
+  }
+
+  .text-muted {
+    @apply text-slate-600 dark:text-slate-400;
+  }
+
+  .btn, .btn-primary, .btn-accent, .btn-secondary, .btn-quiet, .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 sm:text-base;
+  }
+
+  .btn-primary {
+    @apply bg-brand-900 text-white shadow-sm hover:bg-brand-950 dark:bg-brand-600 dark:hover:bg-brand-500;
+  }
+
+  .btn-accent {
+    @apply bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/30 hover:-translate-y-0.5 hover:bg-amber-400 hover:shadow-xl hover:shadow-amber-500/40;
+  }
+
+  /* warna resmi WhatsApp; teks gelap agar kontras tetap lolos WCAG AA */
+  .btn-whatsapp {
+    @apply bg-[#25d366] text-[#0a2e18] shadow-lg shadow-[#25d366]/30 hover:-translate-y-0.5 hover:bg-[#1fb855] hover:shadow-xl hover:shadow-[#25d366]/40;
+  }
+
+  .btn-secondary {
+    @apply border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800;
+  }
+
+  .btn-quiet {
+    @apply border border-white/20 bg-white/10 text-white hover:bg-white/20;
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white p-6 transition-colors duration-200 hover:border-brand-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-700;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white;
+  }
+}
+
+@layer utilities {
+  .reveal {
+    animation: reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .marquee {
+    animation: marquee 34s linear infinite;
+  }
+
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

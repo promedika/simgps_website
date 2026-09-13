@@ -1,0 +1,8 @@
+npm notice run simgps-website@1.0.0 npx
+npm notice run next start -p 3062
+   ▲ Next.js 15.5.4
+   - Local:        http://localhost:3062
+   - Network:      http://192.168.0.100:3062
+
+ ✓ Starting...
+ ✓ Ready in 520ms
