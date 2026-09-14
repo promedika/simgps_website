@@ -9,15 +9,49 @@ import { cn } from "@/lib/cn";
 import ThemeToggle from "@/components/ThemeToggle";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
+const SECTION_IDS = NAV_LINKS.flatMap((l) => l.href.split("#")[1] ?? []);
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [active, setActive] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        setScrolled(window.scrollY > 16);
+        setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // sorot tautan sesuai bagian yang sedang dibaca
+  useEffect(() => {
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => !!el,
+    );
+    if (!sections.length) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setActive(hit.target.id);
+      },
+      { rootMargin: "-30% 0px -60% 0px" },
+    );
+    sections.forEach((s) => io.observe(s));
+    return () => io.disconnect();
   }, []);
 
   // kunci scroll saat panel mobile terbuka
@@ -62,7 +96,14 @@ export default function Navbar() {
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-brand-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+              aria-current={active && l.href.endsWith(`#${active}`) ? "true" : undefined}
+              className={cn(
+                "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-brand-600 after:transition-transform after:duration-300 hover:after:scale-x-100 dark:after:bg-brand-300",
+                active && l.href.endsWith(`#${active}`)
+                  ? "text-brand-800 after:scale-x-100 dark:text-white"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-brand-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white",
+              )}
             >
               {l.label}
             </Link>
@@ -92,10 +133,17 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* garis kemajuan baca */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand-600 transition-opacity duration-300 dark:bg-brand-400"
+        style={{ transform: `scaleX(${progress})`, opacity: scrolled ? 1 : 0 }}
+      />
+
       {open && (
         <div
           id="menu-mobile"
-          className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 pb-8 pt-4 shadow-xl lg:hidden dark:border-slate-800 dark:bg-slate-950"
+          className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] origin-top animate-[panel_.25s_cubic-bezier(0.22,1,0.36,1)] overflow-y-auto border-t border-slate-200 bg-white px-4 pb-8 pt-4 shadow-xl lg:hidden dark:border-slate-800 dark:bg-slate-950"
         >
           <nav aria-label="Menu utama mobile" className="flex flex-col">
             {NAV_LINKS.map((l) => (

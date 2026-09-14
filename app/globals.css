@@ -106,11 +106,56 @@
   }
 
   .card {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 transition-colors duration-200 hover:border-brand-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-700;
+    @apply rounded-2xl border border-slate-200 bg-white p-6 hover:border-brand-300 hover:shadow-lg hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-brand-700 dark:hover:shadow-black/20;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (hover: hover) {
+    .card:hover { transform: translateY(-3px); }
   }
 
   .field {
-    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white;
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 transition-[border-color,box-shadow] duration-200 placeholder:text-slate-400 focus:border-brand-500 focus:shadow-[0_0_0_3px] focus:shadow-brand-500/15 dark:border-slate-700 dark:bg-slate-900 dark:text-white;
+  }
+
+  /* layar pembuka; disembunyikan lewat [data-loaded] pada <html> */
+  .splash {
+    @apply fixed inset-0 z-200 flex flex-col items-center justify-center gap-5 bg-white dark:bg-slate-950;
+    transition: opacity 0.45s ease, visibility 0.45s;
+    /* jaring pengaman: tetap hilang walau JS gagal dimuat */
+    animation: splash-timeout 0.45s ease 4s forwards;
+  }
+
+  @keyframes splash-timeout {
+    to { opacity: 0; visibility: hidden; }
+  }
+
+  html[data-loaded] .splash {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .splash-bar {
+    @apply h-1 w-40 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800;
+  }
+
+  .splash-bar > span {
+    @apply block h-full w-2/5 rounded-full bg-brand-700 dark:bg-brand-400;
+    animation: splash-bar 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  @keyframes splash-bar {
+    0% { transform: translateX(-110%); }
+    100% { transform: translateX(260%); }
+  }
+
+  /* pemuat lingkaran dipakai loading.tsx & tombol kirim */
+  .spinner {
+    @apply inline-block size-8 shrink-0 rounded-full border-[3px] border-slate-200 border-t-brand-700 dark:border-slate-700 dark:border-t-brand-300;
+    animation: spin 0.7s linear infinite;
   }
 }
 
@@ -124,6 +169,23 @@
     to { opacity: 1; transform: none; }
   }
 
+  /* dipasang ScrollReveal: "" = tersembunyi, "in" = tampil */
+  [data-reveal=""] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  [data-reveal] {
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+  }
+
+  [data-reveal="in"] {
+    opacity: 1;
+    transform: none;
+  }
+
   .marquee {
     animation: marquee 34s linear infinite;
   }
@@ -131,10 +193,36 @@
   @keyframes marquee {
     to { transform: translateX(-50%); }
   }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* panel menu mobile */
+  @keyframes panel {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* umpan balik tekan pada semua tombol & tautan tombol */
+  .btn:active, .btn-primary:active, .btn-accent:active,
+  .btn-secondary:active, .btn-quiet:active, .btn-whatsapp:active {
+    transform: translateY(1px) scale(0.985);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+
+  .splash { animation: splash-timeout 1ms linear 1.5s forwards !important; }
+
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

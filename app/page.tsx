@@ -19,6 +19,7 @@ import Footer from "@/components/sections/Footer";
 import StickyCta from "@/components/StickyCta";
 import BackToTop from "@/components/BackToTop";
 import ChatWidget from "@/components/ChatWidget";
+import ScrollReveal from "@/components/ScrollReveal";
 
 export default function Home() {
   return (
@@ -47,6 +48,7 @@ export default function Home() {
       <StickyCta />
       <BackToTop />
       <ChatWidget />
+      <ScrollReveal />
     </>
   );
 }

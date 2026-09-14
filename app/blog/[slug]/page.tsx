@@ -12,6 +12,7 @@ import PostCard from "@/components/PostCard";
 import StickyCta from "@/components/StickyCta";
 import BackToTop from "@/components/BackToTop";
 import ChatWidget from "@/components/ChatWidget";
+import ScrollReveal from "@/components/ScrollReveal";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -143,6 +144,7 @@ export default async function BlogPost({ params }: Params) {
       <StickyCta contactHref="/#kontak" />
       <BackToTop />
       <ChatWidget />
+      <ScrollReveal />
     </>
   );
 }

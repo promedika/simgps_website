@@ -98,6 +98,9 @@ const jsonLd = {
 // ponytail: script inline anti-flash tema; pindah ke next-themes kalau nanti butuh sinkron multi-tab
 const themeScript = `try{var s=localStorage.getItem("theme");var d=s?s==="dark":matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d)}catch(e){}`;
 
+// layar pembuka ditutup setelah aset selesai dimuat; CSS punya batas waktu sendiri sebagai cadangan
+const splashScript = `(function(){var h=document.documentElement,d=function(){h.setAttribute("data-loaded","")};if(document.readyState==="complete")d();else addEventListener("load",d,{once:true})})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={inter.variable} suppressHydrationWarning>
@@ -109,6 +112,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans">
+        <div className="splash" role="status" aria-live="polite">
+          {/* eslint-disable-next-line @next/next/no-img-element -- splash tampil sebelum hidrasi */}
+          <img
+            src="/images/logos/simgps-logo.svg"
+            alt="SIMGPS"
+            width={148}
+            height={54}
+            className="h-11 w-auto dark:brightness-0 dark:invert"
+          />
+          <span className="splash-bar">
+            <span />
+          </span>
+          <span className="sr-only">Memuat halaman</span>
+        </div>
+        <script dangerouslySetInnerHTML={{ __html: splashScript }} />
         <a
           href="#konten"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-brand-900 focus:px-4 focus:py-2 focus:text-white"

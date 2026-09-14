@@ -107,7 +107,12 @@ export default function ContactForm() {
         disabled={status === "sending"}
         className="btn-primary mt-6 w-full disabled:opacity-60"
       >
-        <Send size={16} /> {status === "sending" ? "Mengirim..." : "Kirim Pesan"}
+        {status === "sending" ? (
+          <span className="spinner size-4 border-2 border-white/40 border-t-white" aria-hidden />
+        ) : (
+          <Send size={16} />
+        )}
+        {status === "sending" ? "Mengirim..." : "Kirim Pesan"}
       </button>
 
       <p aria-live="polite" className="mt-4 empty:hidden">
