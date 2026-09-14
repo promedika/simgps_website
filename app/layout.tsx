@@ -98,8 +98,9 @@ const jsonLd = {
 // ponytail: script inline anti-flash tema; pindah ke next-themes kalau nanti butuh sinkron multi-tab
 const themeScript = `try{var s=localStorage.getItem("theme");var d=s?s==="dark":matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d)}catch(e){}`;
 
-// layar pembuka ditutup setelah aset selesai dimuat; CSS punya batas waktu sendiri sebagai cadangan
-const splashScript = `(function(){var h=document.documentElement,d=function(){h.setAttribute("data-loaded","")};if(document.readyState==="complete")d();else addEventListener("load",d,{once:true})})();`;
+// Layar pembuka ditutup setelah aset selesai dimuat, tapi ditahan minimal 900 ms
+// supaya tetap terlihat pada koneksi cepat. CSS punya batas waktu sendiri sebagai cadangan.
+const splashScript = `(function(){var h=document.documentElement,t=Date.now(),d=function(){setTimeout(function(){h.setAttribute("data-loaded","")},Math.max(0,900-(Date.now()-t)))};if(document.readyState==="complete")d();else addEventListener("load",d,{once:true})})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
